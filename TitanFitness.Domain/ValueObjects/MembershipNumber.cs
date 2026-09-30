@@ -1,9 +1,8 @@
 ﻿using CSharpFunctionalExtensions;
-using TitanFitness.Domain;
 
 namespace TitanFitness.Domain.ValueObjects;
 
-public sealed record MembershipNumber
+public sealed record MembershipNumber 
 {
     public string Value { get; }
 
@@ -30,4 +29,6 @@ public sealed record MembershipNumber
         return Result.Success<MembershipNumber, Error>(
             new MembershipNumber(value));
     }
+
+    
 }

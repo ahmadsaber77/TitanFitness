@@ -30,38 +30,58 @@ public class Booking  :IEntity
     }
 
     internal static Result<Booking, Error> CreateBooked(
-      Guid sessionId,
-      Guid memberId,
-      DateTime bookedOn,
-      string? trainerNotes)
+     Guid sessionId,
+     Guid memberId,
+     DateTime bookedOn,
+     int? waitlistPosition,
+     string? trainerNotes)
     {
         if (sessionId == Guid.Empty)
+        {
             return Result.Failure<Booking, Error>(
                 Error.Validation<Booking>(
-                    "Session is required."));
+                    "SessionId is required."));
+        }
 
         if (memberId == Guid.Empty)
+        {
             return Result.Failure<Booking, Error>(
                 Error.Validation<Booking>(
-                    "Member is required."));
+                    "MemberId is required."));
+        }
 
         if (bookedOn == default)
+        {
             return Result.Failure<Booking, Error>(
                 Error.Validation<Booking>(
-                    "Booked date is required."));
+                    "BookedOn is required."));
+        }
+
+        if (waitlistPosition.HasValue && waitlistPosition.Value <= 0)
+        {
+            return Result.Failure<Booking, Error>(
+                Error.Validation<Booking>(
+                    "Waitlist position must be greater than zero."));
+        }
 
         if (trainerNotes is not null && trainerNotes.Length > 500)
+        {
             return Result.Failure<Booking, Error>(
                 Error.Validation<Booking>(
                     "Trainer notes cannot exceed 500 characters."));
+        }
 
         var booking = new Booking(
             Guid.NewGuid(),
             sessionId,
             memberId,
             bookedOn,
-            null,
+            waitlistPosition,
             trainerNotes);
+
+        booking.Status = waitlistPosition.HasValue
+            ? BookingStatus.Waitlisted
+            : BookingStatus.Booked;
 
         return Result.Success<Booking, Error>(booking);
     }

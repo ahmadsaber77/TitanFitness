@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 using TitanFitness.Domain.Common;
 using TitanFitness.Infrastructure.Data;
 
@@ -28,6 +29,16 @@ public class Repository<T> : IRepository<T> where T : class, IAggregateRoot
     return  _context.Set<T>().FirstOrDefaultAsync(e => e.Id == id, cancellationToken);
 
     }
+
+    public Task<T?> FindAsync(
+    Expression<Func<T, bool>> predicate,
+    CancellationToken cancellationToken = default)
+    {
+      return  _context.Set<T>()
+           .FirstOrDefaultAsync(predicate, cancellationToken);
+
+    }
+
 
     public void Remove(T entity)
     {

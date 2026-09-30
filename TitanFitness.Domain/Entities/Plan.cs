@@ -131,13 +131,14 @@ public class Plan : IAggregateRoot
 
 
     public Result<Plan, Error> Update(
-    string name,
-    decimal price,
-    int durationInMonths,
-    int maxFreezeDays,
-    int maxNumberOfFreezes,
-    int guestPassQuota,
-    AccessScope accessScope)
+      string name,
+      decimal price,
+      int durationInMonths,
+      int maxFreezeDays,
+      int maxNumberOfFreezes,
+      int guestPassQuota,
+      AccessScope accessScope,
+      bool isPublished)
     {
         if (string.IsNullOrWhiteSpace(name))
             return Result.Failure<Plan, Error>(
@@ -153,7 +154,6 @@ public class Plan : IAggregateRoot
             return Result.Failure<Plan, Error>(
                 Error.Validation<Plan>(
                     "Plan price cannot be negative."));
-
 
         if (decimal.Round(price, 2) != price)
             return Result.Failure<Plan, Error>(
@@ -192,9 +192,9 @@ public class Plan : IAggregateRoot
         MaxNumberOfFreezes = maxNumberOfFreezes;
         GuestPassQuota = guestPassQuota;
         AccessScope = accessScope;
+        IsPublished = isPublished;
 
         return Result.Success<Plan, Error>(this);
-
     }
 
     public Guid Id { get; private set; }

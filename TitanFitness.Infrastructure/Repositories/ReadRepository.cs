@@ -12,6 +12,7 @@ public class ReadRepository<T> : IReadRepository<T> where T : class, IEntity
     public ReadRepository(ApplicationDbContext context)
     {
         _context = context;
+        _context.ChangeTracker.AutoDetectChangesEnabled = false;
     }
     public Task<T?> GetByIdAsync(
      Guid id,
@@ -34,6 +35,7 @@ public class ReadRepository<T> : IReadRepository<T> where T : class, IEntity
                 predicate,
                 cancellationToken);
     }
+
 
     public IQueryable<T> Query()
     {

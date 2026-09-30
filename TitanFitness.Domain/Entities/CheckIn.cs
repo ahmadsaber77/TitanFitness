@@ -47,7 +47,7 @@ public class CheckIn : IAggregateRoot
                 Error.Validation<CheckIn>(
                     "Check-in date and time is required."));
 
-        if (!Enum.IsDefined(result))
+        if (!Enumeration.GetAll<CheckInResult>().Contains(result))
             return CSharpFunctionalExtensions.Result.Failure<CheckIn, Error>(
                 Error.Validation<CheckIn>(
                     "Invalid check-in result."));
@@ -112,7 +112,6 @@ public class CheckIn : IAggregateRoot
 
     public DateTime? CheckOutDateTime { get; private set; }
 
-    public CheckInResult Result { get; private set; }
-
+    public CheckInResult Result { get; private set; } = null!;
     public string? RefusalReason { get; private set; }
 }

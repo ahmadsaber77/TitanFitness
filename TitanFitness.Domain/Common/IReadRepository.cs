@@ -6,9 +6,13 @@ public interface IReadRepository<T>
 {
     Task<T?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
 
+
+
     Task<T?> FindAsync(
     Expression<Func<T, bool>> predicate,
     CancellationToken cancellationToken = default);
+
+
 
     IQueryable<T> Query();
 }

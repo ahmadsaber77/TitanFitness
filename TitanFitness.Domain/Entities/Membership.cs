@@ -350,11 +350,11 @@ public class Membership : IAggregateRoot
 
     public Result<Membership, Error> ChangePlanAtRenewal(Plan plan)
     {
-        if (Status != MembershipStatus.Expired || Status != MembershipStatus.Active)
+        if (Status != MembershipStatus.Active)
         {
             return Result.Failure<Membership, Error>(
                 Error.Conflict<Membership>(
-                    "Only expired  and activated membership can change plan at renewal."));
+                    "Only active membership can change plan at renewal."));
         }
 
         if (plan is null)
@@ -386,7 +386,8 @@ public class Membership : IAggregateRoot
         }
 
         var purchaseDate = DateTime.UtcNow;
-        var newStartDate = DateOnly.FromDateTime(purchaseDate);
+
+        var newStartDate = EndDate;
 
         var newMembershipResult = Membership.Create(
             MemberId,

@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TitanFitness.Domain", "Tita
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TitanFitness.Infrastructure", "TitanFitness.Infrastructure\TitanFitness.Infrastructure.csproj", "{2475FDB5-8798-47A6-BF5B-7502408C6148}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TitanFitness.Application", "TitanFitness.Application\TitanFitness.Application.csproj", "{D0439245-91E1-4147-92DA-C7A8B675BE04}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{2475FDB5-8798-47A6-BF5B-7502408C6148}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2475FDB5-8798-47A6-BF5B-7502408C6148}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2475FDB5-8798-47A6-BF5B-7502408C6148}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0439245-91E1-4147-92DA-C7A8B675BE04}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0439245-91E1-4147-92DA-C7A8B675BE04}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0439245-91E1-4147-92DA-C7A8B675BE04}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0439245-91E1-4147-92DA-C7A8B675BE04}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

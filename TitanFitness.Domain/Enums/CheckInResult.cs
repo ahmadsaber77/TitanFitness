@@ -1,7 +1,17 @@
-﻿namespace TitanFitness.Domain.Enums;
+﻿using TitanFitness.Domain.Common;
 
-public enum CheckInResult
+namespace TitanFitness.Domain.Enums;
+
+public sealed class CheckInResult : Enumeration
 {
-    Admitted = 1,
-    Refused
+    private CheckInResult(int id, string name)
+        : base(id, name)
+    {
+    }
+
+    public static readonly CheckInResult Admitted =
+        new(1, "Admitted");
+
+    public static readonly CheckInResult Refused =
+        new(2, "Refused");
 }

@@ -2,7 +2,7 @@
 
 namespace TitanFitness.Domain.ValueObjects;
 
-public sealed class Phone
+public sealed class Phone :ValueObject
 {
     private Phone(string value)
     {
@@ -22,5 +22,10 @@ public sealed class Phone
 
         return Result.Success<Phone, Error>(
             new Phone(value));
+    }
+
+    protected override IEnumerable<object> GetEqualityComponents()
+    {
+        yield return Value;
     }
 }

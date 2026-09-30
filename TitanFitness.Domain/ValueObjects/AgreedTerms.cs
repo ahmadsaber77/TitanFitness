@@ -6,8 +6,8 @@ namespace TitanFitness.Domain.ValueObjects;
 public sealed record AgreedTerms 
 {
     private AgreedTerms() 
-        {
-        }
+    {
+    }
 
 
     private AgreedTerms(
@@ -73,6 +73,8 @@ public sealed record AgreedTerms
                 guestPassQuota,
                 accessScope));
     }
+
+   
 
     public decimal Price { get; init; }
 

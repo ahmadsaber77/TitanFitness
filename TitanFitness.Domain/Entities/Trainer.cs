@@ -28,12 +28,12 @@ public class Trainer : IAggregateRoot
     }
 
     public static Result<Trainer, Error> Create(
-        string trainerNumber,
-        string trainerName,
-        Email? email,
-        string? phone,
-        bool isActive,
-        Guid branchId)
+      string trainerNumber,
+      string trainerName,
+      Email? email,
+      Phone? phone,
+      bool isActive,
+      Guid branchId)
     {
         if (string.IsNullOrWhiteSpace(trainerNumber))
             return Result.Failure<Trainer, Error>(
@@ -60,24 +60,20 @@ public class Trainer : IAggregateRoot
                 Error.Validation<Trainer>(
                     "Branch is required."));
 
-        var phoneResult = Phone.Create(phone);
-
-        if (phoneResult.IsFailure)
-            return Result.Failure<Trainer, Error>(
-                phoneResult.Error);
-
         var trainer = new Trainer(
             Guid.NewGuid(),
             trainerNumber,
             trainerName,
             email,
-            phoneResult.Value,
+            phone,
             isActive,
             branchId);
 
         return Result.Success<Trainer, Error>(
             trainer);
     }
+
+
 
     public Result<bool, Error> Deactivate()
     {
@@ -91,6 +87,8 @@ public class Trainer : IAggregateRoot
         return Result.Success<bool, Error>(true);
     }
 
+
+
     public Result<bool, Error> Activate()
     {
         if (IsActive)
@@ -103,24 +101,15 @@ public class Trainer : IAggregateRoot
         return Result.Success<bool, Error>(true);
     }
 
+
+
     public Result<Trainer, Error> Update(
-        string trainerNumber,
-        string trainerName,
-        string? email,
-        string? phone,
-        bool isActive,
-        Guid branchId)
+     string trainerName,
+     Email? email,
+     Phone? phone,
+     bool isActive,
+     Guid branchId)
     {
-        if (string.IsNullOrWhiteSpace(trainerNumber))
-            return Result.Failure<Trainer, Error>(
-                Error.Validation<Trainer>(
-                    "Trainer number is required."));
-
-        if (trainerNumber.Length > 20)
-            return Result.Failure<Trainer, Error>(
-                Error.Validation<Trainer>(
-                    "Trainer number cannot exceed 20 characters."));
-
         if (string.IsNullOrWhiteSpace(trainerName))
             return Result.Failure<Trainer, Error>(
                 Error.Validation<Trainer>(
@@ -136,27 +125,16 @@ public class Trainer : IAggregateRoot
                 Error.Validation<Trainer>(
                     "Branch is required."));
 
-        var emailResult = Email.Create(email);
-
-        if (emailResult.IsFailure)
-            return Result.Failure<Trainer, Error>(
-                emailResult.Error);
-
-        var phoneResult = Phone.Create(phone);
-
-        if (phoneResult.IsFailure)
-            return Result.Failure<Trainer, Error>(
-                phoneResult.Error);
-
-        TrainerNumber = trainerNumber;
         TrainerName = trainerName;
-        Email = emailResult.Value;
-        Phone = phoneResult.Value;
+        Email = email;
+        Phone = phone;
         IsActive = isActive;
         BranchId = branchId;
 
         return Result.Success<Trainer, Error>(this);
     }
+
+
 
     public Guid Id { get; private set; }
 

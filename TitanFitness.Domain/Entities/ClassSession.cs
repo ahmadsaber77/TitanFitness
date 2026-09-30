@@ -240,99 +240,60 @@ public  class ClassSession : IAggregateRoot
 
 
 
-    //public Result<Booking, Error> AddBooking(
-    //  Guid memberId,
-    //  DateTime bookedOn,
-    //  string? trainerNotes)
-    //{
-    //    if (Status != ClassSessionStatus.Open)
-    //    {
-    //        return Result.Failure<Booking, Error>(
-    //            Error.Conflict<ClassSession>(
-    //                "Bookings are allowed only for open sessions."));
-    //    }
+    public Result<Booking, Error> AddBooking(
+     Guid memberId,
+     DateTime bookedOn,
+     string? trainerNotes)
+    {
+        var existingBooking = _bookings.FirstOrDefault(x =>
+            x.MemberId == memberId &&
+            x.Status != BookingStatus.Cancelled);
 
-    //    if (memberId == Guid.Empty)
-    //    {
-    //        return Result.Failure<Booking, Error>(
-    //            Error.Validation<Booking>(
-    //                "Member is required."));
-    //    }
+        if (existingBooking is not null)
+        {
+            return Result.Failure<Booking, Error>(
+                Error.Conflict<ClassSession>(
+                    "Member already has a booking for this session."));
+        }
 
-    //    if (bookedOn == default)
-    //    {
-    //        return Result.Failure<Booking, Error>(
-    //            Error.Validation<Booking>(
-    //                "Booking date is required."));
-    //    }
+        var bookedCount = _bookings.Count(x =>
+            x.Status != BookingStatus.Cancelled &&
+            x.Status != BookingStatus.Waitlisted);
 
-    //    if (trainerNotes is not null && trainerNotes.Length > 500)
-    //    {
-    //        return Result.Failure<Booking, Error>(
-    //            Error.Validation<Booking>(
-    //                "Trainer notes cannot exceed 500 characters."));
-    //    }
+        int? waitlistPosition = null;
 
-    //    if (_bookings.Any(x =>
-    //        x.MemberId == memberId &&
-    //        x.Status != BookingStatus.Cancelled))
-    //    {
-    //        return Result.Failure<Booking, Error>(
-    //            Error.Conflict<ClassSession>(
-    //                "Member already has a booking for this session."));
-    //    }
+        if (bookedCount >= CapacityLimit)
+        {
+            var lastWaitlistPosition = _bookings
+                .Where(x =>
+                    x.Status == BookingStatus.Waitlisted &&
+                    x.WaitlistPosition.HasValue)
+                .Select(x => x.WaitlistPosition!.Value)
+                .DefaultIfEmpty(0)
+                .Max();
 
-    //    var bookedCount = _bookings.Count(x =>
-    //        x.Status == BookingStatus.Booked);
+            waitlistPosition = lastWaitlistPosition + 1;
+        }
 
-    //    if (bookedCount < CapacityLimit)
-    //    {
-    //        var bookingResult = Booking.CreateBooked(
-    //            Id,
-    //            memberId,
-    //            bookedOn,
-    //            trainerNotes);
+        var bookingResult = Booking.CreateBooked(
+            Id,
+            memberId,
+            bookedOn,
+            waitlistPosition,
+            trainerNotes);
 
-    //        if (bookingResult.IsFailure)
-    //        {
-    //            return Result.Failure<Booking, Error>(
-    //                bookingResult.Error);
-    //        }
+        if (bookingResult.IsFailure)
+        {
+            return Result.Failure<Booking, Error>(
+                bookingResult.Error);
+        }
 
-    //        _bookings.Add(bookingResult.Value);
+        var booking = bookingResult.Value;
 
-    //        return Result.Success<Booking, Error>(
-    //            bookingResult.Value);
-    //    }
+        _bookings.Add(booking);
 
-    //    var lastWaitlistPosition = _bookings
-    //        .Where(x => x.Status == BookingStatus.Waitlisted)
-    //        .Select(x => x.WaitlistPosition)
-    //        .Where(x => x.HasValue)
-    //        .Select(x => x!.Value)
-    //        .DefaultIfEmpty(0)
-    //        .Max();
-
-    //    var nextWaitlistPosition = lastWaitlistPosition + 1;
-
-    //    var waitlistedBookingResult = Booking.CreateWaitlisted(
-    //        Id,
-    //        memberId,
-    //        bookedOn,
-    //        nextWaitlistPosition,
-    //        trainerNotes);
-
-    //    if (waitlistedBookingResult.IsFailure)
-    //    {
-    //        return Result.Failure<Booking, Error>(
-    //            waitlistedBookingResult.Error);
-    //    }
-
-    //    _bookings.Add(waitlistedBookingResult.Value);
-
-    //    return Result.Success<Booking, Error>(
-    //        waitlistedBookingResult.Value);
-    //}
+        return Result.Success<Booking, Error>(booking);
+    }
 
 
     public  Guid Id { get; private set; }
